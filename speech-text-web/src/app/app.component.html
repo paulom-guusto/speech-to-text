@@ -1,0 +1,176 @@
+<style>
+    :host {
+        font-family: Poppins, sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        font-size: 14px;
+        color: #333;
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin: 8px 0;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    .toolbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        background-color: #22315C;
+        color: white;
+        font-weight: 600;
+    }
+
+    .toolbar img {
+        margin: 0 16px;
+    }
+
+    .content {
+        display: flex;
+        margin: 0 auto 32px;
+        padding: 0 16px;
+        max-width: 500px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    footer {
+        position: fixed;
+        bottom: 0px;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 20px;
+        background-color: #22315C;
+        color: white;
+        width: 100%;
+        height: 40px;
+    }
+    
+    .heading {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-top: 82px;
+        margin-bottom: 30px;
+        font-size: 1.5rem;
+    }
+
+    /* Responsive Styles */
+    @media screen and (max-width: 767px) {
+        .card.highlight-card span {
+            margin-left: 72px;
+        }
+    }
+
+    .microphone {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        width: 5rem;
+        height: 5rem;
+        background-color: rgb(57 18 163);
+        border: 0;
+        cursor: pointer;
+    }
+    
+    .convertBtn {
+        border: 0;
+        background-color: #15ced1;
+        height: 50px;
+        width: 10rem;
+        color: white;
+        font-size: 1.2rem;
+        border-radius: 0.25rem;
+    }
+    
+    .convertBtn:disabled {
+        cursor: not-allowed;
+    }
+
+    .deleteBtn {
+        position: absolute;
+        bottom: 0.5rem;
+        right: 0.5rem;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        width: 2rem;
+        height: 2rem;
+        background-color: red;
+        border: 0;
+        cursor: pointer;
+    }
+</style>
+
+<div class="toolbar" role="banner">
+    <img width="100" src="../assets/guusto-logo.png"/>
+</div>
+
+<div class="heading">
+    <span>Send Guusto gift <fa-icon [icon]="faGift" size="lg"></fa-icon> and recognition message <fa-icon [icon]="faComment" size="lg"></fa-icon> with voice</span>
+</div>
+
+<div class="content" role="main">
+    <div>
+        <button (click)="startRecording()" class="microphone" *ngIf="!recording">
+            <fa-icon [icon]="faMicrophone" size="3x" style="color: #15ced1;"></fa-icon>
+        </button>
+
+        <button (click)="stopRecording()" class="microphone" *ngIf="recording">
+            <fa-icon [icon]="faMicrophone" size="3x" style="color: #15ced1;"></fa-icon>
+        </button>
+    </div>
+
+    <div style="margin-top: 1rem;">
+        <span style="font-size:1rem; color: green;" *ngIf="!recording">Click to record</span>
+        <span style="font-size:1rem; color: red;" *ngIf="recording">Click to stop</span>
+    </div>
+
+    <div style="margin-top: 1.5rem;">
+        <audio controls="" *ngIf="url">
+            <source [src]="sanitize(url)" type="audio/wav">
+        </audio>
+    </div>
+
+    <div style="margin-top: 1.5rem;">
+        <button (click)="convertToText()" [disabled]="!url" class="convertBtn">Convert</button>
+    </div>
+
+    <div *ngIf="message">
+        <div style="margin-top: 1.5rem;">
+            <span style="font-size:1rem;">Message</span>
+        </div>
+
+        <div style="margin-top: 0.25rem; position: relative;">
+            <button class="deleteBtn" (click)="clearMessage()">
+                <fa-icon [icon]="faTrash" size="lg" style="color: white;"></fa-icon>
+            </button>
+            <textarea [(ngModel)]="message" style="font-size:1rem;" rows="7" cols="48"></textarea>
+        </div>
+
+    </div>
+    
+    <footer>
+        Powered by AI
+    </footer>
+
+</div>
+
+<router-outlet></router-outlet>
