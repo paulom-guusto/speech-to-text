@@ -1,6 +1,7 @@
 package com.guusto.demo;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import com.google.cloud.speech.v1.RecognizeResponse;
 import com.google.cloud.speech.v1.SpeechClient;
 import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
 import com.google.cloud.speech.v1.SpeechRecognitionResult;
+import com.google.protobuf.ByteString;
 
 @Service
 public class SpeechRecognitionService {
@@ -22,28 +24,25 @@ public class SpeechRecognitionService {
 		// Instantiates a client
 		try (SpeechClient speechClient = SpeechClient.create()) {
 
-			// The path to the audio file to transcribe
-//			String gcsUri = "gs://cloud-samples-data/speech/brooklyn_bridge.raw";
+			  RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder().setContent(ByteString.copyFrom(bytes)).build();
+			  ArrayList<String> languageList = new ArrayList<>();
+			  languageList.add("es-ES");
+			  languageList.add("en-US");
 
-			// Builds the sync recognize request
-			RecognitionConfig config = RecognitionConfig.newBuilder().setEncoding(AudioEncoding.LINEAR16)
-					.setSampleRateHertz(44100)
-					.setAudioChannelCount(2)
-					.setEnableAutomaticPunctuation(Boolean.TRUE)
-					.setLanguageCode("en-US")
-					.build();
-			RecognitionAudio audio = RecognitionAudio.newBuilder().setUri("gs://guusto-poc-bucket/embedadapt_1sample.wav").build();
-
-			// Performs speech recognition on the audio file
-			RecognizeResponse response = speechClient.recognize(config, audio);
+		      // Configure request to enable multiple languages
+		      RecognitionConfig config =
+		          RecognitionConfig.newBuilder()
+		              .setEncoding(AudioEncoding.LINEAR16)
+		              .setSampleRateHertz(16000)
+		              .setLanguageCode("ja-JP")
+		              .addAllAlternativeLanguageCodes(languageList)
+		              .build();
+		      
+			RecognizeResponse response = speechClient.recognize(config, recognitionAudio);
 			List<SpeechRecognitionResult> results = response.getResultsList();
 
 			for (SpeechRecognitionResult result : results) {
-				// There can be several alternative transcripts for a given chunk of speech.
-				// Just use the
-				// first (most likely) one here.
 				SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-
 				return alternative.getTranscript();
 			}
 
