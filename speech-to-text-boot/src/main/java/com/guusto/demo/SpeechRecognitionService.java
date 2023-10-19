@@ -27,14 +27,13 @@ public class SpeechRecognitionService {
 			  RecognitionAudio recognitionAudio = RecognitionAudio.newBuilder().setContent(ByteString.copyFrom(bytes)).build();
 			  ArrayList<String> languageList = new ArrayList<>();
 			  languageList.add("es-ES");
-			  languageList.add("en-US");
 
 		      // Configure request to enable multiple languages
 		      RecognitionConfig config =
 		          RecognitionConfig.newBuilder()
 		              .setEncoding(AudioEncoding.LINEAR16)
-		              .setSampleRateHertz(16000)
-		              .setLanguageCode("ja-JP")
+//		              .setSampleRateHertz(16000)
+		              .setLanguageCode("en-US")
 		              .addAllAlternativeLanguageCodes(languageList)
 		              .build();
 		      
